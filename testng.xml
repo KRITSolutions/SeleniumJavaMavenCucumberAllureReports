@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Selenium Cucumber Test Suite" verbose="2" parallel="methods" thread-count="3">
+    <parameter name="browser" value="chrome" />
+
+    <test name="XPath Practice Tests">
+        <classes>
+            <class name="org.example.runners.TestRunner" />
+        </classes>
+    </test>
+
+    <test name="Advanced XPath Tests">
+        <classes>
+            <class name="org.example.runners.TestRunner" />
+        </classes>
+    </test>
+</suite>
+

@@ -1,0 +1,70 @@
+name: Selenium Test Automation - XPath Practice
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 8 * * *'  # Run daily at 8 AM
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [11]
+        browser: [chrome, firefox]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Install Dependencies
+      run: mvn clean install -DskipTests=true
+
+    - name: Run Cucumber Tests
+      run: mvn test -Dbrowser=${{ matrix.browser }} -Dgroups="Smoke,Regression"
+      continue-on-error: true
+
+    - name: Generate Allure Report
+      if: always()
+      run: mvn allure:report
+
+    - name: Upload Allure Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: allure-report-${{ matrix.browser }}
+        path: target/site/allure-maven-plugin/
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.browser }}
+        path: target/surefire-reports/
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-logs-${{ matrix.browser }}
+        path: target/logs/
+
+    - name: Publish Test Report
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: Cucumber Test Results - ${{ matrix.browser }}
+        path: 'target/cucumber-reports/cucumber.json'
+        reporter: 'java-junit'
+
