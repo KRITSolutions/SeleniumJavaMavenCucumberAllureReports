@@ -41,21 +41,21 @@ jobs:
 
     - name: Upload Allure Report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: allure-report-${{ matrix.browser }}
         path: target/site/allure-maven-plugin/
 
     - name: Upload Test Results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results-${{ matrix.browser }}
         path: target/surefire-reports/
 
     - name: Upload Logs
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-logs-${{ matrix.browser }}
         path: target/logs/
